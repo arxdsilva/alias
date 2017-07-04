@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
+	"log"
 	"os"
 	"os/exec"
 )
@@ -23,18 +24,15 @@ func main() {
 		os.Exit(1)
 	}
 	fmt.Printf("Creating alias as: %s, from:%s\n", *aliasName, *cmdName)
-	err := alaias(*aliasName, *cmdName)
+	err := alias{command: *cmdName, short: *aliasName}.Create()
 	if err != nil {
-		fmt.Println(err.Error())
-		os.Exit(1)
+		log.Fatalln(err.Error())
 	}
 	// need to fix this
-	fmt.Println("Refreshing bash shell ENV")
-	cmd := exec.Command("source", "~/.bash_profile")
-	err = cmd.Run()
+	fmt.Println("Refreshing bash shell ENV\nYou shall open a new shell window to use your new alias")
+	err = exec.Command("source", "~/.bash_profile").Run()
 	if err != nil {
-		fmt.Println(err.Error())
-		os.Exit(1)
+		log.Fatalln(err.Error())
 	}
 	os.Exit(0)
 }

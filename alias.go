@@ -6,7 +6,12 @@ import (
 	"os/user"
 )
 
-func alaias(aliasName, cmdName string) error {
+type alias struct {
+	command string
+	short   string
+}
+
+func (a alias) Create() error {
 	usr, err := user.Current()
 	if err != nil {
 		return err
@@ -20,9 +25,6 @@ func alaias(aliasName, cmdName string) error {
 		return err
 	}
 	defer f.Close()
-	text := fmt.Sprintf("\nalias %s=\"%s\"", aliasName, cmdName)
-	if _, err = f.WriteString(text); err != nil {
-		return err
-	}
-	return nil
+	_, err = f.WriteString(fmt.Sprintf("\nalias %s=\"%s\"", a.short, a.command))
+	return err
 }
